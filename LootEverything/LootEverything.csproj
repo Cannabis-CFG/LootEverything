@@ -140,7 +140,7 @@
       <HintPath>C:\JET 12.9\Client\EscapeFromTarkov_Data\Managed\LibraryLoaderUtility.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
-      <HintPath>..\..\..\..\..\JET 12.9\Client\MelonLoader\MelonLoader.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\JET 12.9\Client\MelonLoader\MelonLoader.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Data.Sqlite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

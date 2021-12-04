@@ -29,7 +29,7 @@ namespace LootEverything
             }
         }
 
-        public override void OnApplicationStart()
+        public override void OnApplicationStart() 
         {
             base.OnApplicationStart();
             MelonLogger.Msg("Haha melonloader go brrrt");
@@ -40,6 +40,9 @@ namespace LootEverything
         {
             base.OnGUI();
             GUI.enabled = true;
+            Vector2 nativeSize = new Vector2(1920, 1080);
+            Vector3 scale = new Vector3(Screen.width / nativeSize.x, Screen.height / nativeSize.y, 1.0f);
+            GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, scale);
             GUI.Label(new Rect(21, 41, 300f, 35f), $"Loose Item Count: {remainingItems.Count}");
             GUI.Label(new Rect(21, 56, 300f, 35f), $"Containers with loot: {remainingContainers.Count}");
             //MelonLogger.Msg($"Loose Item Count: {remainingItems.Count}");
@@ -74,7 +77,7 @@ namespace LootEverything
                             int containerAmount = 0;
 
                             foreach (var item in rootContainer.GetAllItems()) 
-                            {
+                            { 
                                 containerAmount++;
                             }
 
