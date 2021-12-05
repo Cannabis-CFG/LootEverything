@@ -12,19 +12,29 @@ namespace LootEverything
 {
     public class LootMod : MelonMod
     {
+        public static Player LocalPlayer { get; set; }
+        public static GameWorld GameWorld { get; set; }
         internal static List<LootItem> remainingItems = new List<LootItem>();
         internal static List<LootableContainer> remainingContainers = new List<LootableContainer>();
+        internal static List<GamePlayer> Players = new List<GamePlayer>();
         private float recountItemsTime;
         private static readonly float itemsInterval = 1f;
         private static int _listCount = 0;
+        private float _nextMainCacheTime;
+        private float _cacheMainInterval = 5f;
 
         public override void OnUpdate()
         {
             base.OnUpdate();
+            if (Time.time >= _nextMainCacheTime)
+            {
+                UpdateMain();
+                _nextMainCacheTime = Time.time + _cacheMainInterval;
+            }
             if (Time.time >= recountItemsTime)
             {
                 CountItems();
-
+                GetPlayers();
                 recountItemsTime = Time.time + itemsInterval;
             }
         }
@@ -32,7 +42,7 @@ namespace LootEverything
         public override void OnApplicationStart() 
         {
             base.OnApplicationStart();
-            MelonLogger.Msg("Haha melonloader go brrrt");
+            MelonLogger.Msg("im currently in a JET melonloader mods folder");
         }
 
 
@@ -45,8 +55,46 @@ namespace LootEverything
             GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, scale);
             GUI.Label(new Rect(21, 41, 300f, 35f), $"Loose Item Count: {remainingItems.Count}");
             GUI.Label(new Rect(21, 56, 300f, 35f), $"Containers with loot: {remainingContainers.Count}");
+            GUI.Label(new Rect(21, 26, 300f, 35f), $"Bots currently alive: {Players.Count}");
             //MelonLogger.Msg($"Loose Item Count: {remainingItems.Count}");
             //MelonLogger.Msg($"Containers with loot: {remainingContainers.Count}");
+        }
+
+
+        private void GetPlayers()
+        {
+            try
+            {
+                if (Players.Count + 1 != Singleton<GameWorld>.Instance.RegisteredPlayers.Count)
+                {
+                    Players.Clear();
+                    var enumerator = GameWorld.RegisteredPlayers.GetEnumerator();
+                    while (enumerator.MoveNext())
+                    {
+                        Player player = enumerator.Current;
+                        if (player == null)
+                            continue;
+
+                        if (player.IsYourPlayer())
+                        {
+                            LocalPlayer = player;
+                            continue;
+                        }
+                        if (!Players.Contains(new GamePlayer(player)))
+                        {
+                            Players.Add(new GamePlayer(player));
+                        }
+                        else if (Players.Contains(new GamePlayer(player)))
+                        {
+                            Players.Remove(new GamePlayer(player));
+                        }
+
+                    }
+                }
+            }
+            catch
+            {
+            }
         }
 
         private void CountItems()
@@ -93,6 +141,19 @@ namespace LootEverything
                 }
             }
             catch { }
+        }
+
+
+        private void UpdateMain()
+        {
+            try
+            {
+                GameWorld = Singleton<GameWorld>.Instance;
+            }
+            catch
+            {
+
+            }
         }
 
     }
