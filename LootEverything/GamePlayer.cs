@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using EFT;
-using EFT.InventoryLogic;
-using UnityEngine;
+﻿using EFT;
+using System;
+
 namespace LootEverything
 {
     public class GamePlayer
@@ -18,8 +16,6 @@ namespace LootEverything
 
             Player = player;
             IsAI = true;
-
         }
-
     }
 }

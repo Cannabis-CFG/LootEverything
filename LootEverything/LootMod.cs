@@ -1,12 +1,9 @@
 ﻿using Comfort.Common;
-using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
 using EFT;
 using EFT.Interactive;
-using EFT.InventoryLogic;
 using MelonLoader;
-using Harmony;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace LootEverything
 {
@@ -22,6 +19,9 @@ namespace LootEverything
         private static int _listCount = 0;
         private float _nextMainCacheTime;
         private float _cacheMainInterval = 5f;
+        //private float _EasterEggInterval = 2f;
+        //private float _EasterEggTime;
+        //System.Random rnd = new System.Random();
 
         public override void OnUpdate()
         {
@@ -39,27 +39,40 @@ namespace LootEverything
             }
         }
 
-        public override void OnApplicationStart() 
+        public override void OnApplicationStart()
         {
             base.OnApplicationStart();
             MelonLogger.Msg("im currently in a JET melonloader mods folder");
         }
 
-
         public override void OnGUI()
         {
             base.OnGUI();
+            //int random = rnd.Next(1, 1000);
             GUI.enabled = true;
             Vector2 nativeSize = new Vector2(1920, 1080);
             Vector3 scale = new Vector3(Screen.width / nativeSize.x, Screen.height / nativeSize.y, 1.0f);
             GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, scale);
+            /*if (random == 235 && Time.time >= _EasterEggTime)
+            {
+                GUI.Label(new Rect(21, 71, 300f, 35f), "Fucking rip bro");
+                _EasterEggTime = Time.time + _EasterEggInterval;
+
+            }
+            else if (Time.time >= _EasterEggTime) 
+            {
+                
+            }*/
             GUI.Label(new Rect(21, 41, 300f, 35f), $"Loose Item Count: {remainingItems.Count}");
             GUI.Label(new Rect(21, 56, 300f, 35f), $"Containers with loot: {remainingContainers.Count}");
             GUI.Label(new Rect(21, 26, 300f, 35f), $"Bots currently alive: {Players.Count}");
+            //GUI.Button(new Rect(21, 71, 35f, 35f), new GUIContent()
+            //{
+            //
+            //});
             //MelonLogger.Msg($"Loose Item Count: {remainingItems.Count}");
             //MelonLogger.Msg($"Containers with loot: {remainingContainers.Count}");
         }
-
 
         private void GetPlayers()
         {
@@ -73,22 +86,15 @@ namespace LootEverything
                     {
                         Player player = enumerator.Current;
                         if (player == null)
-                            continue;
+                            return;
 
                         if (player.IsYourPlayer())
                         {
                             LocalPlayer = player;
                             continue;
                         }
-                        if (!Players.Contains(new GamePlayer(player)))
-                        {
-                            Players.Add(new GamePlayer(player));
-                        }
-                        else if (Players.Contains(new GamePlayer(player)))
-                        {
-                            Players.Remove(new GamePlayer(player));
-                        }
 
+                        Players.Add(new GamePlayer(player));
                     }
                 }
             }
@@ -112,20 +118,18 @@ namespace LootEverything
                     {
                         var current = enumerator.Current;
 
-                        if (current is LootItem lootItem)
+                        if (current is LootItem lootItem and not Corpse)
                         {
-                            
-                           remainingItems.Add(lootItem);
-                            
+                            remainingItems.Add(lootItem);
                         }
 
-                        if (current is LootableContainer lootableContainer)
+                        if (current is LootableContainer lootableContainer && (!(current is Corpse)))
                         {
                             var rootContainer = lootableContainer.ItemOwner.RootItem;
                             int containerAmount = 0;
 
-                            foreach (var item in rootContainer.GetAllItems()) 
-                            { 
+                            foreach (var item in rootContainer.GetAllItems())
+                            {
                                 containerAmount++;
                             }
 
@@ -137,12 +141,10 @@ namespace LootEverything
                             }
                         }
                     }
-
                 }
             }
             catch { }
         }
-
 
         private void UpdateMain()
         {
@@ -152,9 +154,7 @@ namespace LootEverything
             }
             catch
             {
-
             }
         }
-
     }
 }
