@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: MelonInfo(typeof(LootEverything.LootMod), "LootEverything", "1.0.0.0.0.0.0.0.0.0.0.0", "Cannabis")]
+[assembly: MelonInfo(typeof(LootEverything.LootMod), "LootEverything", "1.4.0", "Cannabis")]
 [assembly: MelonGame("Battlestate Games", "Escape from Tarkov")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
