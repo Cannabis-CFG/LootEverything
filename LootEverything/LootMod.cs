@@ -123,18 +123,25 @@ namespace LootEverything
             // Check if the player is in raid
             if (inRaid) 
             {
+                drawGUI(new Rect(21, 45, 300f, 35f), $"Loose Item Count: {remainingItems.Count}");
+                drawGUI(new Rect(21, 60, 300f, 35f), $"Containers with loot: {remainingContainers.Count}");
+                drawGUI(new Rect(21, 30, 300f, 35f), $"Bots currently alive: {Players.Count}");
+
                 // Render the counters visible to the player
                 //if (_showLooseItemCount.Value) 
                 //{
-                    GUI.Label(new Rect(21, 41, 300f, 35f), $"Loose Item Count: {remainingItems.Count}");
+                    //GUI.Label(new Rect(21, 41, 300f, 35f), $"Loose Item Count: {remainingItems.Count}");
+                    //DrawOutline(new Rect(21, 41, 300f, 35f), $"Loose Item Count: {remainingItems.Count}", 10);
                 //}
                 //if (_showRemainingContainerCount.Value) 
                 //{
-                    GUI.Label(new Rect(21, 56, 300f, 35f), $"Containers with loot: {remainingContainers.Count}");
+                    //GUI.Label(new Rect(21, 56, 300f, 35f), $"Containers with loot: {remainingContainers.Count}");
+                    //DrawOutline(new Rect(21, 56, 300f, 35f), $"Containers with loot: {remainingContainers.Count}", 10);
                 //}
                 //if (_showBotCount.Value) 
                 //{
-                    GUI.Label(new Rect(21, 26, 300f, 35f), $"Bots currently alive: {Players.Count}");
+                    //GUI.Label(new Rect(21, 26, 300f, 35f), $"Bots currently alive: {Players.Count}");
+                    //DrawOutline(new Rect(21, 26, 300f, 35f), $"Bots currently alive: {Players.Count}", 10);
                 //}
             }
 
@@ -142,6 +149,7 @@ namespace LootEverything
             //MelonLogger.Msg($"Loose Item Count: {remainingItems.Count}");
             //MelonLogger.Msg($"Containers with loot: {remainingContainers.Count}");
         }
+
         #endregion
 
         #region Data collection methods
@@ -256,6 +264,55 @@ namespace LootEverything
             _showEasterEgg = false;
             _activeEgg = false;
         }
+        // Credits to the original creator of this code
+        public void drawGUI(Rect position, string text)
+        {
+            GUIStyle style = new GUIStyle();
+            int borderWidth = 2;
+            //style.fontSize = 150; 
+            //style.fontStyle = FontStyle.Bold;
+            DrawTextWithOutline(position, text, style, Color.black, Color.white, borderWidth);
+
+        }
+        // Credits to the original creator of this code
+        void DrawTextWithOutline(Rect centerRect, string text, GUIStyle style, Color borderColor, Color innerColor, int borderWidth)
+        {
+            // assign the border color
+            style.normal.textColor = borderColor;
+            // draw an outline color copy to the left and up from original
+            Rect modRect = centerRect;
+            modRect.x -= borderWidth;
+            modRect.y -= borderWidth;
+            GUI.Label(modRect, text, style);
+            // stamp copies from the top left corner to the top right corner
+            while (modRect.x <= centerRect.x + borderWidth)
+            {
+                modRect.x++;
+                GUI.Label(modRect, text, style);
+            }
+            // stamp copies from the top right corner to the bottom right corner
+            while (modRect.y <= centerRect.y + borderWidth)
+            {
+                modRect.y++;
+                GUI.Label(modRect, text, style);
+            }
+            // stamp copies from the bottom right corner to the bottom left corner
+            while (modRect.x >= centerRect.x - borderWidth)
+            {
+                modRect.x--;
+                GUI.Label(modRect, text, style);
+            }
+            // stamp copies from the bottom left corner to the top left corner
+            while (modRect.y >= centerRect.y - borderWidth)
+            {
+                modRect.y--;
+                GUI.Label(modRect, text, style);
+            }
+            // draw the inner color version in the center
+            style.normal.textColor = innerColor;
+            GUI.Label(centerRect, text, style);
+        }
+
         #endregion
 
     }
